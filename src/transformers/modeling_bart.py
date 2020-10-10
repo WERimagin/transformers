@@ -191,7 +191,11 @@ class PretrainedBartModel(PreTrainedModel):
     base_model_prefix = "model"
 
     def _init_weights(self, module):
-        print("pretrainedbartmodel")
+        print("pretrainedmodel")
+        import inspect
+        print(inspect.stack()[1][3])
+        print(inspect.stack()[2][3])
+        print(inspect.stack()[3][3])
         std = self.config.init_std
         if isinstance(module, nn.Linear):
             module.weight.data.normal_(mean=0.0, std=std)
@@ -891,7 +895,6 @@ def _get_shape(t):
 )
 class BartModel(PretrainedBartModel):
     def __init__(self, config: BartConfig):
-        print("bartmodel")
         super().__init__(config)
 
         padding_idx, vocab_size = config.pad_token_id, config.vocab_size
