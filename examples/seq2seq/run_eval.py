@@ -64,7 +64,7 @@ def generate_summaries_or_translations(
         )
         """
 
-        summaries = model.generate()
+        summaries = model.generate(input_ids=batch.input_ids,attention_mask=batch.attention_mask)
         dec = tokenizer.batch_decode(summaries, skip_special_tokens=True, clean_up_tokenization_spaces=False)
         for hypothesis in dec:
             fout.write(hypothesis + "\n")
