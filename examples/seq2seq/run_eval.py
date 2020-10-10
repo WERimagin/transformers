@@ -50,8 +50,6 @@ def generate_summaries_or_translations(
     start_time = time.time()
     # update config with task specific params
     use_task_specific_params(model, task)
-    print(type(model))
-    print(*generate_kwargs)
     if prefix is None:
         prefix = prefix or getattr(model.config, "prefix", "") or ""
     for examples_chunk in tqdm(list(chunks(examples, batch_size))):
@@ -61,6 +59,7 @@ def generate_summaries_or_translations(
             input_ids=batch.input_ids,
             attention_mask=batch.attention_mask,
             **generate_kwargs,
+            test=3
         )
         dec = tokenizer.batch_decode(summaries, skip_special_tokens=True, clean_up_tokenization_spaces=False)
         for hypothesis in dec:
