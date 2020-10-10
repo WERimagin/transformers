@@ -891,6 +891,7 @@ def _get_shape(t):
 )
 class BartModel(PretrainedBartModel):
     def __init__(self, config: BartConfig):
+        print("bartmodel")
         super().__init__(config)
 
         padding_idx, vocab_size = config.pad_token_id, config.vocab_size
@@ -1020,7 +1021,6 @@ class BartForConditionalGeneration(PretrainedBartModel):
     authorized_missing_keys = [r"final_logits_bias", r"encoder\.version", r"decoder\.version"]
 
     def __init__(self, config: BartConfig):
-        print("condition")
         super().__init__(config)
         base_model = BartModel(config)
         self.model = base_model
