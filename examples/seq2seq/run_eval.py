@@ -44,6 +44,9 @@ def generate_summaries_or_translations(
     if fp16:
         model = model.half()
 
+    print(type(model))
+    print(model)
+
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     logger.info(f"Inferred tokenizer type: {tokenizer.__class__}")  # if this is wrong, check config.model_type.
 
@@ -55,18 +58,11 @@ def generate_summaries_or_translations(
     for examples_chunk in tqdm(list(chunks(examples, batch_size))):
         examples_chunk = [prefix + text for text in examples_chunk]
         batch = tokenizer(examples_chunk, return_tensors="pt", truncation=True, padding="longest").to(device)
-        print("batch")
-        """
         summaries = model.generate(
             input_ids=batch.input_ids,
             attention_mask=batch.attention_mask,
             **generate_kwargs,
         )
-        """
-        print(batch.input_ids)
-
-        summaries = model.generate(input_ids=batch.input_ids,attention_mask=batch.attention_mask)
-        print("end")
         dec = tokenizer.batch_decode(summaries, skip_special_tokens=True, clean_up_tokenization_spaces=False)
         for hypothesis in dec:
             fout.write(hypothesis + "\n")
