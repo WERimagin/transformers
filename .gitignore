@@ -1,5 +1,10 @@
 # Initially taken from Github's Python gitignore file
 
+
+
+#memo.txt
+memo.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -432,4 +432,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    sys.path.append("/home/sasazawa/transformers/src/")
+
     main(args)
