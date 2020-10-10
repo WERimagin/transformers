@@ -117,8 +117,6 @@ def run_generate(verbose=True):
     # Unspecified args like --num_beams=2 --decoder_start_token_id=4 are passed to model.generate
     args, rest = parser.parse_known_args()
     parsed_args = parse_numeric_n_bool_cl_kwargs(rest)
-    print(rest)
-    print(parsed_args)
     if parsed_args and verbose:
         print(f"parsed the following generate kwargs: {parsed_args}")
     examples = [" " + x.rstrip() if "t5" in args.model_name else x.rstrip() for x in open(args.input_path).readlines()]
