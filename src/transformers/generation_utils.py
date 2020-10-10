@@ -502,6 +502,9 @@ class GenerationMixin:
                 model_kwargs=model_kwargs,
             )
 
+        print(output.shape)
+        print(output)
+
         return output
 
     def _generate_no_beam_search(
