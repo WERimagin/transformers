@@ -44,9 +44,6 @@ def generate_summaries_or_translations(
     if fp16:
         model = model.half()
 
-    print(type(model))
-    print(model)
-
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     logger.info(f"Inferred tokenizer type: {tokenizer.__class__}")  # if this is wrong, check config.model_type.
 
