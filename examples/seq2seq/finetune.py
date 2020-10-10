@@ -11,8 +11,6 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 sys.path.append("/home/sasazawa/transformers/src/")
-import pprint
-pprint.pprint(sys.path)
 
 import numpy as np
 import pytorch_lightning as pl
