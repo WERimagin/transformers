@@ -10,6 +10,10 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+sys.path.append("/home/sasazawa/transformers/src/")
+import pprint
+pprint.pprint(sys.path)
+
 import numpy as np
 import pytorch_lightning as pl
 import torch
@@ -431,7 +435,5 @@ if __name__ == "__main__":
     parser = SummarizationModule.add_model_specific_args(parser, os.getcwd())
 
     args = parser.parse_args()
-
-    sys.path.append("/home/sasazawa/transformers/src/")
 
     main(args)
