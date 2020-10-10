@@ -8,6 +8,7 @@ import warnings
 from logging import getLogger
 from pathlib import Path
 from typing import Dict, List
+import sys
 
 sys.path.append("/home/sasazawa/transformers/src/")
 sys.path.append("/home/sasazawa/transformers/examples/")
