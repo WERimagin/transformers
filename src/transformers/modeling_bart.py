@@ -165,9 +165,13 @@ def _prepare_bart_decoder_inputs(
     Note: this is not called during generation
     """
     pad_token_id = config.pad_token_id
+
+    #docoder_idがないなら作成
     if decoder_input_ids is None:
         decoder_input_ids = shift_tokens_right(input_ids, pad_token_id)
     bsz, tgt_len = decoder_input_ids.size()
+
+    #maskがないなら作成、あるならinvert?
     if decoder_padding_mask is None:
         decoder_padding_mask = make_padding_mask(decoder_input_ids, pad_token_id)
     else:
@@ -269,6 +273,8 @@ class EncoderLayer(nn.Module):
         Returns:
             encoded output of shape `(seq_len, batch, embed_dim)`
         """
+
+        #self_attention->残差和->layernorm
         residual = x
         if self.normalize_before:
             x = self.self_attn_layer_norm(x)
@@ -280,6 +286,7 @@ class EncoderLayer(nn.Module):
         if not self.normalize_before:
             x = self.self_attn_layer_norm(x)
 
+        #linear->activation->linear->残差和->layernorm
         residual = x
         if self.normalize_before:
             x = self.final_layer_norm(x)
@@ -295,7 +302,8 @@ class EncoderLayer(nn.Module):
             x = torch.clamp(x, min=-clamp_value, max=clamp_value)
         return x, attn_weights
 
-
+#bartのencoder
+#embeddingもこの中で行う
 class BartEncoder(nn.Module):
     """
     Transformer encoder consisting of *config.encoder_layers* self attention layers. Each layer
@@ -355,6 +363,8 @@ class BartEncoder(nn.Module):
         if attention_mask is not None:
             attention_mask = invert_mask(attention_mask)
 
+        #embeddingして、embed_scaleする(通常は1.0)
+        #positionも足して、layernorm->dropout
         inputs_embeds = self.embed_tokens(input_ids) * self.embed_scale
         embed_pos = self.embed_positions(input_ids)
         x = inputs_embeds + embed_pos
@@ -366,6 +376,8 @@ class BartEncoder(nn.Module):
 
         encoder_states = [] if output_hidden_states else None
         all_attentions = () if output_attentions else None
+
+        #encoder_layerに規定回数投げる
         for encoder_layer in self.layers:
             if output_hidden_states:
                 encoder_states.append(x)
@@ -435,10 +447,12 @@ class DecoderLayer(nn.Module):
 
         if layer_state is None:
             layer_state = {}
+
+
+        #attention->res->norm
         if self.normalize_before:
             x = self.self_attn_layer_norm(x)
         # Self Attention
-
         x, self_attn_weights = self.self_attn(
             query=x,
             key=x,
@@ -452,6 +466,7 @@ class DecoderLayer(nn.Module):
         if not self.normalize_before:
             x = self.self_attn_layer_norm(x)
 
+        #cross_attn->res->norm
         # Cross attention
         residual = x
         assert self.encoder_attn.cache_key != self.self_attn.cache_key
@@ -566,6 +581,7 @@ class BartDecoder(nn.Module):
             )
             past_key_values = unused.pop("decoder_past_key_values")
 
+        #maskを反転
         # check attention mask and invert
         if encoder_padding_mask is not None:
             encoder_padding_mask = invert_mask(encoder_padding_mask)
@@ -586,6 +602,7 @@ class BartDecoder(nn.Module):
         x = x.transpose(0, 1)
         encoder_hidden_states = encoder_hidden_states.transpose(0, 1)
 
+        #decoder layerごと
         # decoder layers
         all_hidden_states = () if output_hidden_states else None
         all_self_attns = () if output_attentions else None
@@ -866,7 +883,7 @@ def fill_with_neg_inf(t):
 def _get_shape(t):
     return getattr(t, "shape", None)
 
-
+#Bart本体のモデル
 @add_start_docstrings(
     "The bare BART Model outputting raw hidden-states without any specific head on top.",
     BART_START_DOCSTRING,
@@ -878,6 +895,7 @@ class BartModel(PretrainedBartModel):
         padding_idx, vocab_size = config.pad_token_id, config.vocab_size
         self.shared = nn.Embedding(vocab_size, config.d_model, padding_idx)
 
+        #embeddingは共通で、encoder, decoder_layer両方にそれぞれ与える
         self.encoder = BartEncoder(config, self.shared)
         self.decoder = BartDecoder(config, self.shared)
 
@@ -921,6 +939,7 @@ class BartModel(PretrainedBartModel):
         use_cache = use_cache if use_cache is not None else self.config.use_cache
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
+        #decoderのマスクを作成、ないならdecoder_input_idsも作成
         # make masks if user doesn't supply
         if not use_cache:
             decoder_input_ids, decoder_padding_mask, causal_mask = _prepare_bart_decoder_inputs(
@@ -935,6 +954,7 @@ class BartModel(PretrainedBartModel):
 
         assert decoder_input_ids is not None
 
+        #encoder
         if encoder_outputs is None:
             encoder_outputs = self.encoder(
                 input_ids=input_ids,
@@ -951,6 +971,7 @@ class BartModel(PretrainedBartModel):
                 attentions=encoder_outputs[2] if len(encoder_outputs) > 2 else None,
             )
 
+        #decoder, encoderの入力も与えられる。
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
         decoder_outputs = self.decoder(
             decoder_input_ids,
@@ -989,7 +1010,7 @@ class BartModel(PretrainedBartModel):
     def get_output_embeddings(self):
         return _make_linear_from_emb(self.shared)  # make it on the fly
 
-
+#入力が投げられるところ、本体はbartencoder
 @add_start_docstrings(
     "The BART Model with a language modeling head. Can be used for summarization.", BART_START_DOCSTRING
 )

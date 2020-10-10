@@ -57,7 +57,7 @@ arg_to_scheduler = {
 arg_to_scheduler_choices = sorted(arg_to_scheduler.keys())
 arg_to_scheduler_metavar = "{" + ", ".join(arg_to_scheduler_choices) + "}"
 
-
+#transformer, summarizationmoduleから来るときはmode=summarization
 class BaseTransformer(pl.LightningModule):
     def __init__(
         self,
@@ -103,6 +103,8 @@ class BaseTransformer(pl.LightningModule):
         else:
             self.tokenizer: PreTrainedTokenizer = tokenizer
         self.model_type = MODEL_MODES[mode]
+
+        #modelの定義
         if model is None:
             self.model = self.model_type.from_pretrained(
                 self.hparams.model_name_or_path,

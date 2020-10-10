@@ -44,7 +44,8 @@ from lightning_base import BaseTransformer, add_generic_args, generic_train  # n
 
 logger = logging.getLogger(__name__)
 
-
+#要約モジュール
+#BaseTransformerでモデルが定義されてる？
 class SummarizationModule(BaseTransformer):
     mode = "summarization"
     loss_names = ["loss"]
@@ -112,6 +113,7 @@ class SummarizationModule(BaseTransformer):
             self.eval_max_length = self.model.config.max_length
         self.val_metric = self.default_val_metric if self.hparams.val_metric is None else self.hparams.val_metric
 
+    #predict
     def forward(self, input_ids, **kwargs):
         return self.model(input_ids, **kwargs)
 
@@ -121,6 +123,7 @@ class SummarizationModule(BaseTransformer):
         )
         return lmap(str.strip, gen_text)
 
+    #train
     def _step(self, batch: dict) -> Tuple:
         pad_token_id = self.tokenizer.pad_token_id
         src_ids, src_mask = batch["input_ids"], batch["attention_mask"]
@@ -130,6 +133,7 @@ class SummarizationModule(BaseTransformer):
         else:
             decoder_input_ids = shift_tokens_right(tgt_ids, pad_token_id)
 
+        #モデル（forward)に投げるところ
         outputs = self(src_ids, attention_mask=src_mask, decoder_input_ids=decoder_input_ids, use_cache=False)
         lm_logits = outputs[0]
         if self.hparams.label_smoothing == 0:
@@ -149,6 +153,7 @@ class SummarizationModule(BaseTransformer):
     def pad(self) -> int:
         return self.tokenizer.pad_token_id
 
+    #train, 中身は_stepでここはlogの定義
     def training_step(self, batch, batch_idx) -> Dict:
         loss_tensors = self._step(batch)
 
@@ -191,6 +196,7 @@ class SummarizationModule(BaseTransformer):
     def calc_generative_metrics(self, preds, target) -> Dict:
         return calculate_rouge(preds, target)
 
+    #生成時？
     def _generative_step(self, batch: dict) -> dict:
         t0 = time.time()
 
@@ -338,7 +344,7 @@ class SummarizationModule(BaseTransformer):
         )
         return parser
 
-
+#翻訳モデル。modelが違う、言語設定が弄られてる、blueで評価してる以外はおそらく同じ
 class TranslationModule(SummarizationModule):
     mode = "translation"
     loss_names = ["loss"]
@@ -358,6 +364,9 @@ def main(args, model=None) -> SummarizationModule:
     Path(args.output_dir).mkdir(exist_ok=True)
     if len(os.listdir(args.output_dir)) > 3 and args.do_train:
         raise ValueError("Output directory ({}) already exists and is not empty.".format(args.output_dir))
+
+
+    #model定義。翻訳と要約で
     if model is None:
         if "summarization" in args.task:
             model: SummarizationModule = SummarizationModule(args)
@@ -388,6 +397,8 @@ def main(args, model=None) -> SummarizationModule:
         es_callback = False
 
     lower_is_better = args.val_metric == "loss"
+
+    #trainerに投げて、中で訓練も行う
     trainer: pl.Trainer = generic_train(
         model,
         args,
