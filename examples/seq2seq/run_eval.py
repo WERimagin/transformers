@@ -63,8 +63,10 @@ def generate_summaries_or_translations(
             **generate_kwargs,
         )
         """
+        print(batch.input_ids)
 
         summaries = model.generate(input_ids=batch.input_ids,attention_mask=batch.attention_mask)
+        print("end")
         dec = tokenizer.batch_decode(summaries, skip_special_tokens=True, clean_up_tokenization_spaces=False)
         for hypothesis in dec:
             fout.write(hypothesis + "\n")
