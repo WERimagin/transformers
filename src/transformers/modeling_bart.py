@@ -1084,6 +1084,9 @@ class BartForConditionalGeneration(PretrainedBartModel):
             >>> tokenizer.decode(predictions).split()
             >>> # ['good', 'great', 'all', 'really', 'very']
         """
+
+        print(input_ids)
+
         if "lm_labels" in unused:
             warnings.warn(
                 "The `lm_labels` argument is deprecated and will be removed in a future version, use `labels` instead.",
