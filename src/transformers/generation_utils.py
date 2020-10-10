@@ -456,10 +456,10 @@ class GenerationMixin:
 
         print("generate")
         import inspect
-        print(inspect.stack()[0][3])
-        print(inspect.stack()[1][3])
-        print(inspect.stack()[2][3])
-        print(inspect.stack()[3][3])
+        print(inspect.stack()[0][1],inspect.stack()[0][3])
+        print(inspect.stack()[1][1],inspect.stack()[1][3])
+        print(inspect.stack()[2][1],inspect.stack()[2][3])
+        print(inspect.stack()[3][1],inspect.stack()[3][3])
 
         if num_beams > 1:
             output = self._generate_beam_search(
