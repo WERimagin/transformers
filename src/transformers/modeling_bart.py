@@ -196,6 +196,7 @@ class PretrainedBartModel(PreTrainedModel):
         print(inspect.stack()[1][3])
         print(inspect.stack()[2][3])
         print(inspect.stack()[3][3])
+        print()
         std = self.config.init_std
         if isinstance(module, nn.Linear):
             module.weight.data.normal_(mean=0.0, std=std)
