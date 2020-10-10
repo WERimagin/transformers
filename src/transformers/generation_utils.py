@@ -378,6 +378,8 @@ class GenerationMixin:
             effective_batch_size = batch_size
             effective_batch_mult = 1
 
+        #ここで、encoderの出力を計算し、encoder_outputsに入れる。
+        #input_idsは実質使わない
         if self.config.is_encoder_decoder:
             if decoder_start_token_id is None:
                 # see if BOS token can be used for decoder_start_token_id
@@ -454,8 +456,6 @@ class GenerationMixin:
             cur_len < max_length
         ), f"The context has {cur_len} number of tokens, but `max_length` is only {max_length}. Please make sure that `max_length` is bigger than the number of tokens, by setting either `generate(max_length=...,...)` or `config.max_length = ...`"
 
-        print(input_ids,input_ids.shape)
-        print(top_k, top_p)
         if num_beams > 1:
             output = self._generate_beam_search(
                 input_ids,
@@ -503,7 +503,6 @@ class GenerationMixin:
             )
 
         print(output.shape)
-        print(output)
 
         return output
 
