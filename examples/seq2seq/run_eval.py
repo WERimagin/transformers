@@ -47,6 +47,10 @@ def generate_summaries_or_translations(
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     logger.info(f"Inferred tokenizer type: {tokenizer.__class__}")  # if this is wrong, check config.model_type.
 
+
+    print(type(model))
+    print(model)
+
     start_time = time.time()
     # update config with task specific params
     use_task_specific_params(model, task)
