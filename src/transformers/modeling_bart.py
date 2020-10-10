@@ -1086,7 +1086,7 @@ class BartForConditionalGeneration(PretrainedBartModel):
         """
 
         import inspect
-        print inspect.stack()[1][3]
+        print(inspect.stack()[1][3])
         print(input_ids,attention_mask, decod)
 
         if "lm_labels" in unused:
