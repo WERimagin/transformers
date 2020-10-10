@@ -191,6 +191,7 @@ class PretrainedBartModel(PreTrainedModel):
     base_model_prefix = "model"
 
     def _init_weights(self, module):
+        print("pretrainedbartmodel")
         std = self.config.init_std
         if isinstance(module, nn.Linear):
             module.weight.data.normal_(mean=0.0, std=std)
@@ -1019,6 +1020,7 @@ class BartForConditionalGeneration(PretrainedBartModel):
     authorized_missing_keys = [r"final_logits_bias", r"encoder\.version", r"decoder\.version"]
 
     def __init__(self, config: BartConfig):
+        print("condition")
         super().__init__(config)
         base_model = BartModel(config)
         self.model = base_model

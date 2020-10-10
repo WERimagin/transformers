@@ -423,6 +423,7 @@ class PreTrainedModel(nn.Module, ModuleUtilsMixin, GenerationMixin):
         return {"input_ids": torch.tensor(DUMMY_INPUTS)}
 
     def __init__(self, config: PretrainedConfig, *inputs, **kwargs):
+        print("pretrainedmodel")
         super().__init__()
         if not isinstance(config, PretrainedConfig):
             raise ValueError(
