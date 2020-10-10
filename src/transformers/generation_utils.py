@@ -255,6 +255,10 @@ class GenerationMixin:
                 "Please use another model class (e.g. `OpenAIGPTLMHeadModel`, `XLNetLMHeadModel`, `GPT2LMHeadModel`, `CTRLLMHeadModel`, `T5WithLMHeadModel`, `TransfoXLLMHeadModel`, `XLMWithLMHeadModel`, `BartForConditionalGeneration` )"
             )
 
+        print(repetition_penalty)
+        print(top_k)
+        print(top_p)
+
         max_length = max_length if max_length is not None else self.config.max_length
         min_length = min_length if min_length is not None else self.config.min_length
         do_sample = do_sample if do_sample is not None else self.config.do_sample
@@ -279,6 +283,11 @@ class GenerationMixin:
         decoder_start_token_id = (
             decoder_start_token_id if decoder_start_token_id is not None else self.config.decoder_start_token_id
         )
+
+        print(repetition_penalty)
+        print(top_k)
+        print(top_p)
+        print(self.config)
 
         if input_ids is not None:
             batch_size = input_ids.shape[0]  # overriden by the input batch_size
