@@ -455,7 +455,6 @@ class GenerationMixin:
         ), f"The context has {cur_len} number of tokens, but `max_length` is only {max_length}. Please make sure that `max_length` is bigger than the number of tokens, by setting either `generate(max_length=...,...)` or `config.max_length = ...`"
 
         print(num_beams)
-        num_beams=4
 
         if num_beams > 1:
             output = self._generate_beam_search(
