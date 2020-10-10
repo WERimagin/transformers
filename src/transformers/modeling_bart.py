@@ -1085,10 +1085,6 @@ class BartForConditionalGeneration(PretrainedBartModel):
             >>> # ['good', 'great', 'all', 'really', 'very']
         """
 
-        import inspect
-        print(inspect.stack())
-        print(input_ids,attention_mask)
-
         if "lm_labels" in unused:
             warnings.warn(
                 "The `lm_labels` argument is deprecated and will be removed in a future version, use `labels` instead.",
