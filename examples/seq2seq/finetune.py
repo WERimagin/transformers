@@ -118,6 +118,7 @@ class SummarizationModule(BaseTransformer):
 
     #predict
     def forward(self, input_ids, **kwargs):
+        print("forward")
         return self.model(input_ids, **kwargs)
 
     def ids_to_clean_text(self, generated_ids: List[int]):
@@ -128,6 +129,7 @@ class SummarizationModule(BaseTransformer):
 
     #train
     def _step(self, batch: dict) -> Tuple:
+        print("step")
         pad_token_id = self.tokenizer.pad_token_id
         src_ids, src_mask = batch["input_ids"], batch["attention_mask"]
         tgt_ids = batch["labels"]
