@@ -258,6 +258,9 @@ class GenerationMixin:
         print(repetition_penalty)
         print(top_k)
         print(top_p)
+        print(self.config.repetition_penalty)
+        print(self.config.top_k)
+        print(self.config.top_p)
 
         max_length = max_length if max_length is not None else self.config.max_length
         min_length = min_length if min_length is not None else self.config.min_length
