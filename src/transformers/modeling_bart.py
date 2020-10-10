@@ -1110,13 +1110,6 @@ class BartForConditionalGeneration(PretrainedBartModel):
             if decoder_input_ids is None:
                 decoder_input_ids = shift_tokens_right(labels, self.config.pad_token_id)
 
-        import inspect
-        print(inspect.stack()[0][3])
-        print(inspect.stack()[1][3])
-        print(inspect.stack()[2][3])
-        print(inspect.stack()[3][3])
-        print(inspect.stack()[4][3])
-        print(inspect.stack()[5][3])
         #訓練時には、input_idsに入力文が入る
         #生成時には、encoder_outputsに予め計算したencoderの出力、decoder_input_idsに各ステップごとに計算された入力が与えられる
         outputs = self.model(
