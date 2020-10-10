@@ -280,11 +280,6 @@ class GenerationMixin:
             decoder_start_token_id if decoder_start_token_id is not None else self.config.decoder_start_token_id
         )
 
-        print(repetition_penalty)
-        print(top_k)
-        print(top_p)
-        print(self.config)
-
         if input_ids is not None:
             batch_size = input_ids.shape[0]  # overriden by the input batch_size
         else:
