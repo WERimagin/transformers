@@ -1111,7 +1111,7 @@ class BartForConditionalGeneration(PretrainedBartModel):
                 decoder_input_ids = shift_tokens_right(labels, self.config.pad_token_id)
 
         print(input_ids.shape)
-        print(decoder_input_ids.shape)
+        print(encoder_outputs.shape)
 
         outputs = self.model(
             input_ids,
