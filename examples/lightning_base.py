@@ -91,6 +91,7 @@ class BaseTransformer(pl.LightningModule):
 
         print(self.config)
 
+        #以下の値がセットされていたら、上書きする。（デフォルトは上書きしない）
         extra_model_params = ("encoder_layerdrop", "decoder_layerdrop", "dropout", "attention_dropout")
         for p in extra_model_params:
             if getattr(self.hparams, p, None):

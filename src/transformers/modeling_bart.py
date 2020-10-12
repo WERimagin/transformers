@@ -536,6 +536,8 @@ class BartDecoder(nn.Module):
         self.layernorm_embedding = LayerNorm(config.d_model) if config.normalize_embedding else nn.Identity()
         self.layer_norm = LayerNorm(config.d_model) if config.add_final_layer_norm else None
 
+        print(self.dropout, self.layerdrop, self.embed_scale, self.padding_idx)
+
     def forward(
         self,
         input_ids,
@@ -684,6 +686,8 @@ class Attention(nn.Module):
         self.q_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
         self.out_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
         self.cache_key = "encoder_decoder" if self.encoder_decoder_attention else "self"
+
+        print(self.dropout, self.scaling, self.num_heads)
 
     def _shape(self, tensor, seq_len, bsz):
         return tensor.contiguous().view(seq_len, bsz * self.num_heads, self.head_dim).transpose(0, 1)
