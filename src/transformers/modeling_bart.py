@@ -1137,6 +1137,9 @@ class BartForConditionalGeneration(PretrainedBartModel):
             output = (lm_logits,) + outputs[1:]
             return ((masked_lm_loss,) + output) if masked_lm_loss is not None else output
 
+        print(outputs[0].shape)
+        print(lm_logits.shape)
+
         return Seq2SeqLMOutput(
             loss=masked_lm_loss,
             logits=lm_logits,
