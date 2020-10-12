@@ -118,7 +118,6 @@ class SummarizationModule(BaseTransformer):
 
     #predict
     def forward(self, input_ids, **kwargs):
-        print("forward")
         return self.model(input_ids, **kwargs)
 
     def ids_to_clean_text(self, generated_ids: List[int]):
@@ -129,7 +128,6 @@ class SummarizationModule(BaseTransformer):
 
     #train
     def _step(self, batch: dict) -> Tuple:
-        print("step")
         pad_token_id = self.tokenizer.pad_token_id
         src_ids, src_mask = batch["input_ids"], batch["attention_mask"]
         tgt_ids = batch["labels"]
@@ -206,6 +204,8 @@ class SummarizationModule(BaseTransformer):
         t0 = time.time()
 
         # parser.add_argument('--eval_max_gen_length', type=int, default=None, help='never generate more than n tokens')
+
+        #generate
         generated_ids = self.model.generate(
             batch["input_ids"],
             attention_mask=batch["attention_mask"],
@@ -217,6 +217,8 @@ class SummarizationModule(BaseTransformer):
         gen_time = (time.time() - t0) / batch["input_ids"].shape[0]
         preds: List[str] = self.ids_to_clean_text(generated_ids)
         target: List[str] = self.ids_to_clean_text(batch["labels"])
+
+        #生成
         loss_tensors = self._step(batch)
         base_metrics = {name: loss for name, loss in zip(self.loss_names, loss_tensors)}
         rouge: Dict = self.calc_generative_metrics(preds, target)
@@ -292,6 +294,8 @@ class SummarizationModule(BaseTransformer):
     def add_model_specific_args(parser, root_dir):
         BaseTransformer.add_model_specific_args(parser, root_dir)
         add_generic_args(parser, root_dir)
+
+        #source,targetの最大の長さ
         parser.add_argument(
             "--max_source_length",
             default=1024,
@@ -338,8 +342,11 @@ class SummarizationModule(BaseTransformer):
         parser.add_argument(
             "--val_metric", type=str, default=None, required=False, choices=["bleu", "rouge2", "loss", None]
         )
+        #生成する最大長
         parser.add_argument("--eval_max_gen_length", type=int, default=None, help="never generate more than n tokens")
+        #保存するチェックポイント？
         parser.add_argument("--save_top_k", type=int, default=1, required=False, help="How many checkpoints to save")
+        #early stopをいくら待つか？デフォルトはearly stopしない
         parser.add_argument(
             "--early_stopping_patience",
             type=int,
@@ -366,9 +373,9 @@ class TranslationModule(SummarizationModule):
 
 
 def main(args, model=None) -> SummarizationModule:
-    Path(args.output_dir).mkdir(exist_ok=True)
-    if len(os.listdir(args.output_dir)) > 3 and args.do_train:
-        raise ValueError("Output directory ({}) already exists and is not empty.".format(args.output_dir))
+    #Path(args.output_dir).mkdir(exist_ok=True)
+    #if len(os.listdir(args.output_dir)) > 3 and args.do_train:
+    #    raise ValueError("Output directory ({}) already exists and is not empty.".format(args.output_dir))
 
 
     #model定義。翻訳と要約で
@@ -436,5 +443,7 @@ if __name__ == "__main__":
     parser = SummarizationModule.add_model_specific_args(parser, os.getcwd())
 
     args = parser.parse_args()
+
+    print(args)
 
     main(args)

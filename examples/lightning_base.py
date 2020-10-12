@@ -231,16 +231,20 @@ class BaseTransformer(pl.LightningModule):
             type=float,
             help="Encoder layer dropout probability (Optional). Goes into model.config",
         )
+
+        #decoderのlayerdrop
         parser.add_argument(
             "--decoder_layerdrop",
             type=float,
             help="Decoder layer dropout probability (Optional). Goes into model.config",
         )
+        #通常のdropout
         parser.add_argument(
             "--dropout",
             type=float,
             help="Dropout probability (Optional). Goes into model.config",
         )
+        #attentionのdropout、デフォルトはなし
         parser.add_argument(
             "--attention_dropout",
             type=float,
@@ -305,7 +309,6 @@ def add_generic_args(parser, root_dir) -> None:
         action="store_true",
         help="Whether to use 16-bit (mixed) precision (through NVIDIA apex) instead of 32-bit",
     )
-
     parser.add_argument(
         "--fp16_opt_level",
         type=str,
@@ -313,7 +316,9 @@ def add_generic_args(parser, root_dir) -> None:
         help="For fp16: Apex AMP optimization level selected in ['O0', 'O1', 'O2', and 'O3']."
         "See details at https://nvidia.github.io/apex/amp.html",
     )
+    #tpuのコア数？
     parser.add_argument("--n_tpu_cores", dest="tpu_cores", type=int)
+    #gradient norm (val用？)
     parser.add_argument("--max_grad_norm", dest="gradient_clip_val", default=1.0, type=float, help="Max gradient norm")
     parser.add_argument("--do_train", action="store_true", help="Whether to run training.")
     parser.add_argument("--do_predict", action="store_true", help="Whether to run predictions on the test set.")
