@@ -536,8 +536,6 @@ class BartDecoder(nn.Module):
         self.layernorm_embedding = LayerNorm(config.d_model) if config.normalize_embedding else nn.Identity()
         self.layer_norm = LayerNorm(config.d_model) if config.add_final_layer_norm else None
 
-        print(self.dropout, self.layerdrop, self.embed_scale, self.padding_idx)
-
     def forward(
         self,
         input_ids,
