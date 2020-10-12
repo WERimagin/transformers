@@ -382,6 +382,7 @@ class BartEncoder(nn.Module):
             if output_hidden_states:
                 encoder_states.append(x)
             # add LayerDrop (see https://arxiv.org/abs/1909.11556 for description)
+            #一定確率でlayerを無視する(dropoutみたいなもの)、testは常に0
             dropout_probability = random.uniform(0, 1)
             if self.training and (dropout_probability < self.layerdrop):  # skip the layer
                 attn = None
@@ -534,6 +535,8 @@ class BartDecoder(nn.Module):
         )  # type: List[DecoderLayer]
         self.layernorm_embedding = LayerNorm(config.d_model) if config.normalize_embedding else nn.Identity()
         self.layer_norm = LayerNorm(config.d_model) if config.add_final_layer_norm else None
+
+        print(self.dropout, self.layerdrop, self.embed_scale, self.padding_idx)
 
     def forward(
         self,
