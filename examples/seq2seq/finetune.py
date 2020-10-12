@@ -139,6 +139,7 @@ class SummarizationModule(BaseTransformer):
         #モデル（forward)に投げるところ
         outputs = self(src_ids, attention_mask=src_mask, decoder_input_ids=decoder_input_ids, use_cache=False)
         lm_logits = outputs[0]
+        print(lm_logits.shape, tgt_ids.shape)
         if self.hparams.label_smoothing == 0:
             # Same behavior as modeling_bart.py, besides ignoring pad_token_id
             ce_loss_fct = torch.nn.CrossEntropyLoss(ignore_index=pad_token_id)
