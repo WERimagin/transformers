@@ -257,6 +257,8 @@ class GenerationMixin:
 
         print(self.config)
         print(self.config.max_length, self.config.num_beams)
+        for k,v in self.config.items():
+            print(k,v)
 
         max_length = max_length if max_length is not None else self.config.max_length
         min_length = min_length if min_length is not None else self.config.min_length
