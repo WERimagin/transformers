@@ -52,7 +52,6 @@ def generate_summaries_or_translations(
     use_task_specific_params(model, task)
     if prefix is None:
         prefix = prefix or getattr(model.config, "prefix", "") or ""
-    print(model.config)
     for examples_chunk in tqdm(list(chunks(examples, batch_size))):
         examples_chunk = [prefix + text for text in examples_chunk]
         batch = tokenizer(examples_chunk, return_tensors="pt", truncation=True, padding="longest").to(device)
@@ -122,7 +121,6 @@ def run_generate(verbose=True):
         print(f"parsed the following generate kwargs: {parsed_args}")
     examples = [" " + x.rstrip() if "t5" in args.model_name else x.rstrip() for x in open(args.input_path).readlines()]
 
-    print(args)
     if args.n_obs > 0:
         examples = examples[: args.n_obs]
     Path(args.save_path).parent.mkdir(exist_ok=True)
