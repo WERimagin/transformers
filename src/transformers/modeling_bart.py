@@ -972,7 +972,8 @@ class BartModel(PretrainedBartModel):
                 attentions=encoder_outputs[2] if len(encoder_outputs) > 2 else None,
             )
 
-        print(decoder_input_ids.shape, encoder_outputs[0].shape, attention_mask.shape, decoder_padding_mask.shape, causal_mask.shape)
+        print(decoder_input_ids.shape, encoder_outputs[0].shape, attention_mask.shape,)
+        print(decoder_padding_mask, causal_mask)
 
         #decoder, encoderの入力も与えられる。
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
