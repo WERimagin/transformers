@@ -930,9 +930,6 @@ class BartModel(PretrainedBartModel):
             )
             past_key_values = kwargs.pop("decoder_past_key_values")
 
-        print(use_cache, self.config.use_cache)
-        print(decoder_input_ids)
-
         if decoder_input_ids is None:
             use_cache = False
 
@@ -943,7 +940,7 @@ class BartModel(PretrainedBartModel):
         use_cache = use_cache if use_cache is not None else self.config.use_cache
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
-        #decoderのマスクを作成、ないならdecoder_input_idsも作成
+        #decoderのマスクを作成、ないならdecoder_input_idsも作成（train時）
         # make masks if user doesn't supply
         if not use_cache:
             decoder_input_ids, decoder_padding_mask, causal_mask = _prepare_bart_decoder_inputs(
@@ -975,9 +972,6 @@ class BartModel(PretrainedBartModel):
                 attentions=encoder_outputs[2] if len(encoder_outputs) > 2 else None,
             )
 
-        print(decoder_input_ids.shape, encoder_outputs[0].shape, attention_mask.shape,)
-        print(decoder_padding_mask, causal_mask)
-
         #decoder, encoderの入力も与えられる。
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
         decoder_outputs = self.decoder(
@@ -992,8 +986,6 @@ class BartModel(PretrainedBartModel):
             output_hidden_states=output_hidden_states,
             return_dict=return_dict,
         )
-
-        print(decoder_outputs[0].shape)
 
         if not return_dict:
             return decoder_outputs + encoder_outputs

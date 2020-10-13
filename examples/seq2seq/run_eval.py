@@ -148,6 +148,8 @@ def run_generate(verbose=True):
     scores: dict = score_fn(output_lns, reference_lns)
     scores.update(runtime_metrics)
 
+    print(output_lns, scores, runtime_metrics)
+
     if args.dump_args:
         scores.update(parsed_args)
     if args.info:
