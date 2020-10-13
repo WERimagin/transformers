@@ -990,6 +990,8 @@ class BartModel(PretrainedBartModel):
             return_dict=return_dict,
         )
 
+        print(decoder_outputs[0].shape)
+
         if not return_dict:
             return decoder_outputs + encoder_outputs
 
