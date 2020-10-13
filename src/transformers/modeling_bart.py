@@ -930,6 +930,8 @@ class BartModel(PretrainedBartModel):
             )
             past_key_values = kwargs.pop("decoder_past_key_values")
 
+        print(use_cache, self.config.use_cache)
+
         if decoder_input_ids is None:
             use_cache = False
 
