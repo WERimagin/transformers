@@ -533,6 +533,7 @@ class GenerationMixin:
 
         past = None
         while cur_len < max_length:
+            print(model_inputs["decoder_input_ids"].shape)
             model_inputs = self.prepare_inputs_for_generation(
                 input_ids, past=past, attention_mask=attention_mask, use_cache=use_cache, **model_kwargs
             )
@@ -604,6 +605,7 @@ class GenerationMixin:
                 attention_mask = torch.cat(
                     [attention_mask, attention_mask.new_ones((attention_mask.shape[0], 1))], dim=-1
                 )
+            print(model_inputs["decoder_input_ids"].shape)
 
         return input_ids
 
