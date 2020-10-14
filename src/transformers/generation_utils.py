@@ -538,7 +538,6 @@ class GenerationMixin:
                 input_ids, past=past, attention_mask=attention_mask, use_cache=use_cache, **model_kwargs
             )
 
-
             outputs = self(**model_inputs, return_dict=True)
             next_token_logits = outputs.logits[:, -1, :]
 
@@ -602,7 +601,6 @@ class GenerationMixin:
                 attention_mask = torch.cat(
                     [attention_mask, attention_mask.new_ones((attention_mask.shape[0], 1))], dim=-1
                 )
-            print(model_kwargs["decoder_input_ids"].shape)
         return input_ids
 
     def _generate_beam_search(

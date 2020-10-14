@@ -40,7 +40,9 @@ def generate_summaries_or_translations(
     """Save model.generate results to <out_file>, and return how long it took."""
     fout = Path(out_file).open("w", encoding="utf-8")
     model_name = str(model_name)
+    print(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
+    print(type(model))
     if fp16:
         model = model.half()
 
@@ -147,8 +149,6 @@ def run_generate(verbose=True):
     reference_lns = [x.rstrip() for x in open(args.reference_path).readlines()][: len(output_lns)]
     scores: dict = score_fn(output_lns, reference_lns)
     scores.update(runtime_metrics)
-
-    print(output_lns, scores, runtime_metrics)
 
     if args.dump_args:
         scores.update(parsed_args)
