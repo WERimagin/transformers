@@ -536,7 +536,7 @@ class GenerationMixin:
             model_inputs = self.prepare_inputs_for_generation(
                 input_ids, past=past, attention_mask=attention_mask, use_cache=use_cache, **model_kwargs
             )
-            print(model_inputs["decoder_input_ids"])
+            print(model_inputs["decoder_input_ids"].shape)
 
             outputs = self(**model_inputs, return_dict=True)
             next_token_logits = outputs.logits[:, -1, :]
