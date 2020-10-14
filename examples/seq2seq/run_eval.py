@@ -48,7 +48,7 @@ def generate_summaries_or_translations(
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     logger.info(f"Inferred tokenizer type: {tokenizer.__class__}")  # if this is wrong, check config.model_type.
-
+    print(type(model))
     start_time = time.time()
     # update config with task specific params
     use_task_specific_params(model, task)
@@ -57,6 +57,7 @@ def generate_summaries_or_translations(
     for examples_chunk in tqdm(list(chunks(examples, batch_size))):
         examples_chunk = [prefix + text for text in examples_chunk]
         batch = tokenizer(examples_chunk, return_tensors="pt", truncation=True, padding="longest").to(device)
+        print(type(model))
         summaries = model.generate(
             input_ids=batch.input_ids,
             attention_mask=batch.attention_mask,
