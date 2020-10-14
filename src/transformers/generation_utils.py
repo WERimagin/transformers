@@ -533,11 +533,10 @@ class GenerationMixin:
 
         past = None
         while cur_len < max_length:
-            print(model_inputs["decoder_input_ids"].shape)
             model_inputs = self.prepare_inputs_for_generation(
                 input_ids, past=past, attention_mask=attention_mask, use_cache=use_cache, **model_kwargs
             )
-            print(model_inputs["decoder_input_ids"].shape)
+            print(model_kwargs["decoder_input_ids"].shape)
 
             outputs = self(**model_inputs, return_dict=True)
             next_token_logits = outputs.logits[:, -1, :]
@@ -555,7 +554,7 @@ class GenerationMixin:
                 batch_size=batch_size,
                 num_beams=1,
             )
-            print(model_inputs["decoder_input_ids"].shape)
+            print(model_kwargs["decoder_input_ids"].shape)
 
             # if model has past, then set the past variable to speed up decoding
             if "past_key_values" in outputs:
@@ -582,7 +581,6 @@ class GenerationMixin:
                 tokens_to_add = next_token * unfinished_sents + (pad_token_id) * (1 - unfinished_sents)
             else:
                 tokens_to_add = next_token
-            print(model_inputs["decoder_input_ids"].shape)
             # add token and increase length by one
             input_ids = torch.cat([input_ids, tokens_to_add.unsqueeze(-1)], dim=-1)
             cur_len = cur_len + 1
@@ -594,7 +592,6 @@ class GenerationMixin:
                 sent_lengths.masked_fill_(is_sents_unfinished_and_token_to_add_is_eos, cur_len)
                 # unfinished_sents is set to zero if eos in sentence
                 unfinished_sents.mul_((~eos_in_sents).long())
-            print(model_inputs["decoder_input_ids"].shape)
 
             # stop when there is a </s> in each sentence, or if we exceed the maximul length
             if unfinished_sents.max() == 0:
@@ -605,8 +602,7 @@ class GenerationMixin:
                 attention_mask = torch.cat(
                     [attention_mask, attention_mask.new_ones((attention_mask.shape[0], 1))], dim=-1
                 )
-            print(model_inputs["decoder_input_ids"].shape)
-
+            print(model_kwargs["decoder_input_ids"].shape)
         return input_ids
 
     def _generate_beam_search(
