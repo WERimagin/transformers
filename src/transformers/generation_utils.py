@@ -533,10 +533,11 @@ class GenerationMixin:
 
         past = None
         while cur_len < max_length:
+            print(type(self.model))
             model_inputs = self.prepare_inputs_for_generation(
                 input_ids, past=past, attention_mask=attention_mask, use_cache=use_cache, **model_kwargs
             )
-            print(model_kwargs["decoder_input_ids"].shape)
+
 
             outputs = self(**model_inputs, return_dict=True)
             next_token_logits = outputs.logits[:, -1, :]
@@ -554,7 +555,6 @@ class GenerationMixin:
                 batch_size=batch_size,
                 num_beams=1,
             )
-            print(model_kwargs["decoder_input_ids"].shape)
 
             # if model has past, then set the past variable to speed up decoding
             if "past_key_values" in outputs:
