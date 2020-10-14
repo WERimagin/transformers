@@ -1151,6 +1151,11 @@ class BartForConditionalGeneration(PretrainedBartModel):
     def prepare_inputs_for_generation(
         self, decoder_input_ids, past, attention_mask, use_cache, encoder_outputs, **kwargs
     ):
+        import inspect
+        print(inspect.stack()[0][3])
+        print(inspect.stack()[1][3])
+        print(inspect.stack()[2][3])
+        print(inspect.stack()[3][3])
         return {
             "input_ids": None,  # encoder_outputs is defined. input_ids not needed
             "encoder_outputs": encoder_outputs,

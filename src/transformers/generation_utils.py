@@ -248,7 +248,6 @@ class GenerationMixin:
             outputs = model.generate(input_ids=input_ids, max_length=100, do_sample=True, bad_words_ids=bad_words_ids)  # generate sequences without allowing bad_words to be generated
         """
 
-        print(type(model))
         # We cannot generate if the model does not have a LM head
         if self.get_output_embeddings() is None:
             raise AttributeError(
@@ -534,11 +533,10 @@ class GenerationMixin:
 
         past = None
         while cur_len < max_length:
-            print(type(self.model))
+            print(model_kwargs)
             model_inputs = self.prepare_inputs_for_generation(
                 input_ids, past=past, attention_mask=attention_mask, use_cache=use_cache, **model_kwargs
             )
-
             outputs = self(**model_inputs, return_dict=True)
             next_token_logits = outputs.logits[:, -1, :]
 
